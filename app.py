@@ -9,27 +9,27 @@ from config import SQLALCHEMY_DATABASE_URI, SQLALCHEMY_TRACK_MODIFICATIONS
 from datetime import timedelta, datetime
 from models import User, Task, Company
 
-# ✅ Initialize Flask app
+# Initialize Flask app
 app = Flask(__name__)
 
-# ✅ Configure database
+# Configure database
 app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = SQLALCHEMY_TRACK_MODIFICATIONS
 app.config['JWT_SECRET_KEY'] = 'your_secret_key'
 
-# ✅ Set Token Expiry Times
+# Set Token Expiry Times
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(minutes=50)
 app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(days=30)
 
-# ✅ Initialize Extensions
+#Initialize Extensions
 db.init_app(app)
 bcrypt.init_app(app)
 jwt.init_app(app)
-migrate = Migrate(app, db)  # ✅ Database migration setup
+migrate = Migrate(app, db)  #Database migration setup
 
 blacklisted_tokens = set()
 
-# ✅ User Registration
+#User Registration
 import re
 
 @app.route('/register', methods=['POST'])
@@ -44,7 +44,7 @@ def register():
         if not username or not mobile_no or not password or not company_name:
             return jsonify({"error": "Missing required fields"}), 400
 
-        # ✅ Check if the company exists, otherwise create it
+        #Check if the company exists, otherwise create it
         company = Company.query.filter_by(name=company_name).first()
         if not company:
             company = Company(name=company_name)  # Create new company
@@ -67,7 +67,7 @@ def register():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# ✅ User Login
+#User Login
 @app.route('/login', methods=['POST'])
 def login():
     try:
@@ -91,7 +91,7 @@ def login():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# ✅ Profile Picture Update Route
+#Profile Picture Update Route
 @app.route('/profile/update', methods=['PUT'])
 @jwt_required()
 def update_profile():
@@ -115,7 +115,7 @@ def update_profile():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# ✅ Fetch a Particular User’s Complete Details
+#Fetch a Particular User’s Complete Details
 @app.route('/user/<int:user_id>', methods=['GET'])
 @jwt_required()
 def get_user_details(user_id):
@@ -167,7 +167,7 @@ def get_all_users():
 
     return jsonify({"users": user_list}), 200
 
-# ✅ Fetch Company Progress (Cumulative Completed Tasks)
+#Fetch Company Progress (Cumulative Completed Tasks)
 @app.route('/companies', methods=['GET'])
 @jwt_required()
 def get_company_progress():
@@ -186,7 +186,7 @@ def get_company_progress():
 
     return jsonify({"companies": company_list}), 200
 
-# ✅ Create Task
+#Create Task
 @app.route('/tasks', methods=['POST'])
 @jwt_required()
 def create_task():
@@ -203,7 +203,7 @@ def create_task():
 
     return jsonify({"message": "Task created successfully!"}), 201
 
-# ✅ Mark Task as Completed
+#Mark Task as Completed
 @app.route('/tasks/<int:task_id>/complete', methods=['PUT'])
 @jwt_required()
 def complete_task(task_id):

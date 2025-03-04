@@ -6,8 +6,6 @@ class Company(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
-
-    # ✅ Fix: Change the backref name to avoid conflict
     users = db.relationship('User', backref='company', lazy=True)
 
     def __repr__(self):
